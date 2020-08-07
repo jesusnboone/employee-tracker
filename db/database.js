@@ -9,7 +9,7 @@ const connection = mysql.createConnection({
   // Your MySQL username
   user: 'root',
   // Your MySQL password
-  password: '',
+  password: 'titties1!',
   database: 'employees_db'
 });
 
@@ -43,9 +43,9 @@ employeeAll = () => {
   });
 };
 
-function menu() {
+function tracker() {
 
-  function createManager() {
+  function menu() {
     console.log("EMPLOYEE TRACKER");
     inquirer.prompt([
       {
@@ -74,9 +74,34 @@ function menu() {
       case "view all EMPLOYEES":
         employeeAll();
         break;
+      case "add a DEPARTMENT":
+        addDepartment()
+
     }
   })};
-  createManager();
+
+  function addDepartment() {
+    inquirer.prompt([
+      {
+        type: "input",
+        name: "departmentName",
+        message: "What is the name of this department?"
+      }
+    ])
+    .then(answers => {
+      console.log(answers.departmentName);
+      newDepartment = () => {
+        connection.query("INSERT INTO department (name) VALUES ('" + answers.departmentName + "')", function(err, res) {
+          if (err) throw err;
+          departmentAll();
+          connection.end();
+        });
+      };
+      newDepartment();
+    })
+
+  }
+  menu();
 }
 
-menu();
+tracker();
