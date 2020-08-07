@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "ascii-art": "^2.5.0",
+    "ascii-art-table": "^1.0.1",
     "console.table": "^0.10.0",
     "inquirer": "^7.3.3",
     "mysql2": "^2.1.0"
