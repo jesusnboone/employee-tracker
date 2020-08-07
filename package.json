@@ -10,10 +10,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "jest",
-    "migrate": "mysql2 db/employees.db < db/schema.sql",
-    "seed": "mysql2 db/employees.db < db/seeds.sql",
-    "start": "node db/database.js"
+    "test": ""
   },
   "repository": {
     "type": "git",
