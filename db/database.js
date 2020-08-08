@@ -27,6 +27,8 @@ departmentAll = () => {
   });
 };
 
+
+
 roleAll = () => {
   connection.query('SELECT * FROM role', function(err, res) {
     if (err) throw err;
@@ -75,7 +77,11 @@ function tracker() {
         employeeAll();
         break;
       case "add a DEPARTMENT":
-        addDepartment()
+        addDepartment();
+        break;
+      case "add a ROLE":
+        addRole();
+        break;
 
     }
   })};
@@ -99,8 +105,55 @@ function tracker() {
       };
       newDepartment();
     })
-
   }
+
+  function addRole() {
+    departmentName = () => {
+      connection.query('SELECT name FROM department', function(err, res) {
+        if (err) throw err;
+        var deptArray = []
+        console.log(res);
+        for (i = 0; i < res.length; i++){
+          deptArray.push(res[i].name);
+        }
+        console.log(deptArray);
+        connection.end();
+    inquirer.prompt([
+      {
+        type: "input",
+        name: "roleTitle",
+        message: "What is the title of this role?"
+      },
+      {
+        type: "input",
+        name: "roleSalary",
+        message: "What is the salary of this role?"
+      },
+      {
+        type: "list",
+        name: "roleDepartment",
+        message: "What is the department for this role?",
+        choices: deptArray
+      }
+    ])
+    /*
+    .then(answers => {
+      console.log(answers.roleName);
+      newRole = () => {
+        connection.query("INSERT INTO role (name) VALUES ('" + answers.roleName + "')", function(err, res) {
+          if (err) throw err;
+          roleAll();
+          connection.end();
+        });
+      };
+      newRole();
+      
+    })
+    */
+  });}
+  departmentName();
+};
+
   menu();
 }
 
