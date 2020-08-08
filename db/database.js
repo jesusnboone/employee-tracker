@@ -9,7 +9,7 @@ const connection = mysql.createConnection({
   // Your MySQL username
   user: 'root',
   // Your MySQL password
-  password: 'titties1!',
+  password: '',
   database: 'employees_db'
 });
 
@@ -117,7 +117,6 @@ function tracker() {
           deptArray.push(res[i].name);
         }
         console.log(deptArray);
-        connection.end();
     inquirer.prompt([
       {
         type: "input",
@@ -136,11 +135,13 @@ function tracker() {
         choices: deptArray
       }
     ])
-    /*
+    
     .then(answers => {
-      console.log(answers.roleName);
+      console.log(answers.roleTitle);
+      console.log(answers.roleSalary);
+      console.log(answers.roleDepartment);
       newRole = () => {
-        connection.query("INSERT INTO role (name) VALUES ('" + answers.roleName + "')", function(err, res) {
+        connection.query("INSERT INTO role (title, salary, department_id) VALUES ('" + answers.roleTitle + "','" + answers.roleSalary + "','" + answers.roleDepartment + "') WHERE department_id = department.name", function(err, res) {
           if (err) throw err;
           roleAll();
           connection.end();
@@ -149,7 +150,7 @@ function tracker() {
       newRole();
       
     })
-    */
+    
   });}
   departmentName();
 };
