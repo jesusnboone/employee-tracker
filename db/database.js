@@ -85,6 +85,9 @@ function tracker() {
       case "add a ROLE":
         addRole();
         break;
+      case "add an EMPLOYEE":
+        addEmployee();
+        break;
 
     }
   })};
@@ -140,13 +143,9 @@ function tracker() {
     ])
     
     .then(answers => {
-      console.log(answers.roleTitle);
-      console.log(answers.roleSalary);
-      console.log(answers.roleDepartment);
       getDeptId = () => {
         connection.query("SELECT (id) FROM department WHERE department.name = ('" + answers.roleDepartment + "')", function(err, res) {
           if (err) throw err;
-          console.log(res);
           let deptId = []
           deptId.push(res[0].id);
         
@@ -154,14 +153,72 @@ function tracker() {
           if (err) throw err;
           roleAll();
           connection.end();
-        })});;
-      };
+        })})
+      }
       getDeptId();
     })
     
-  });}
-  departmentName();
-};
+    });}
+    departmentName();
+  };
+
+  function addEmployee() {
+    roleCall = () => {
+      connection.query('SELECT title FROM role', function(err, res) {
+        if (err) throw err;
+        var roleArray = []
+        console.log(res);
+        for (i = 0; i < res.length; i++){
+          roleArray.push(res[i].title);
+        }
+        console.log(roleArray);
+      connection.query('SELECT first_name FROM employee WHERE employee.manager_id IS NULL', function(err, res) {
+          if (err) throw err;
+          var managerArray = []
+          console.log(res);
+          for (i = 0; i < res.length; i++){
+            managerArray.push(res[i].first_name);
+          }
+          console.log(managerArray);
+    inquirer.prompt([
+      {
+        type: "input",
+        name: "employeeFirstName",
+        message: "What is the first name of this employee?"
+      },
+      {
+        type: "input",
+        name: "employeeLastName",
+        message: "What is the last name of this employee?"
+      },
+      {
+        type: "list",
+        name: "roleTitle",
+        message: "What is the role title for this employee?",
+        choices: roleArray
+      }
+    ])
+    
+    .then(answers => {
+      newEmployee = () => {
+        connection.query("SELECT (id) FROM role WHERE role.title = ('" + answers.roleTitle + "')", function(err, res) {
+          if (err) throw err;
+          let roleId = []
+          roleId.push(res[0].id);
+        
+        connection.query("INSERT INTO employee (first_name, last_name, role_id) VALUES ('" + answers.employeeFirstName + "','" + answers.employeeLastName + "','" + roleId[0] + "')", function(err, res) {
+          if (err) throw err;
+          employeeAll();
+          connection.end();
+        })})
+      }
+      newEmployee();
+    })
+    
+    })})}
+    roleCall();
+  };
+
 
   menu();
 }
