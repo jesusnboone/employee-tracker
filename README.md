@@ -1,6 +1,7 @@
 
   # Employee Tracker
 
+![employee-tracker-gif](https://user-images.githubusercontent.com/65085372/89742150-f6c25a00-da5c-11ea-977a-cb833d38f43b.gif)
 
   ## Description
 
@@ -39,3 +40,4 @@
 
   Contact: jesusnboone@gmail.com
   Github Username: https://github.com/jesusnboone
+  Video Link: https://drive.google.com/file/d/1bK0FWNDqt_59RWvFmdKfFADV8Ng2BRqG/view?usp=sharing
