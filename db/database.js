@@ -9,7 +9,7 @@ const connection = mysql.createConnection({
   // Your MySQL username
   user: 'root',
   // Your MySQL password
-  password: 'titties1!',
+  password: '',
   database: 'employees_db'
 });
 
@@ -88,6 +88,9 @@ function tracker() {
       case "add an EMPLOYEE":
         addEmployee();
         break;
+      case "update an EMPLOYEE ROLE":
+        updateEmployee();
+        break;
 
     }
   })};
@@ -101,7 +104,6 @@ function tracker() {
       }
     ])
     .then(answers => {
-      console.log(answers.departmentName);
       newDepartment = () => {
         connection.query("INSERT INTO department (name) VALUES ('" + answers.departmentName + "')", function(err, res) {
           if (err) throw err;
@@ -118,11 +120,9 @@ function tracker() {
       connection.query('SELECT name FROM department', function(err, res) {
         if (err) throw err;
         var deptArray = []
-        console.log(res);
         for (i = 0; i < res.length; i++){
           deptArray.push(res[i].name);
         }
-        console.log(deptArray);
     inquirer.prompt([
       {
         type: "input",
@@ -167,19 +167,15 @@ function tracker() {
       connection.query('SELECT title FROM role', function(err, res) {
         if (err) throw err;
         var roleArray = []
-        console.log(res);
         for (i = 0; i < res.length; i++){
           roleArray.push(res[i].title);
         }
-        console.log(roleArray);
       connection.query('SELECT first_name FROM employee WHERE employee.manager_id IS NULL', function(err, res) {
           if (err) throw err;
           var managerArray = []
-          console.log(res);
           for (i = 0; i < res.length; i++){
             managerArray.push(res[i].first_name);
           }
-          console.log(managerArray);
     inquirer.prompt([
       {
         type: "input",
@@ -209,7 +205,6 @@ function tracker() {
         connection.query("INSERT INTO employee (first_name, last_name, role_id) VALUES ('" + answers.employeeFirstName + "','" + answers.employeeLastName + "','" + roleId[0] + "')", function(err, res) {
           if (err) throw err;
           employeeAll();
-          connection.end();
         })})
       }
       newEmployee();
@@ -219,6 +214,65 @@ function tracker() {
     roleCall();
   };
 
+  function updateEmployee() {
+    getEmployee = () => {
+      connection.query('SELECT title FROM role', function(err, res) {
+        if (err) throw err;
+        var roleArray = []
+        for (i = 0; i < res.length; i++){
+          roleArray.push(res[i].title);
+        }
+      connection.query('SELECT first_name FROM employee', function(err, res) {
+          if (err) throw err;
+          var employeeArray = []
+          for (i = 0; i < res.length; i++){
+            employeeArray.push(res[i].first_name);
+          }
+    inquirer.prompt([
+      {
+        type: "list",
+        name: "employeeName",
+        message: "What is the name of this employee?",
+        choices: employeeArray
+      },
+      {
+        type: "list",
+        name: "newRole",
+        message: "What is the new role of this employee?",
+        choices: roleArray
+      }
+    ])
+    
+    .then(answers => {
+      updateRole = () => {
+        connection.query("SELECT (id) FROM role WHERE title = ('" + answers.newRole + "')", function(err, res) {
+          if (err) throw err;
+          let roleId = []
+          roleId.push(res[0].id);
+            
+          connection.query("SELECT (id) FROM employee WHERE first_name = ('" + answers.employeeName + "')", function(err, res) {
+            if (err) throw err;
+            let employeeId = []
+            employeeId.push(res[0].id);
+        
+        connection.query("UPDATE employee SET role_id = '" + roleId[0] + "' WHERE id = " + employeeId[0]), function(err, res) {
+          if (err) throw err;
+          employeeAll();
+        }})})
+
+        connection.query('SELECT a.id, a.first_name, a.last_name, CONCAT(b.first_name, " ", b.last_name) AS manager FROM employee a LEFT JOIN employee b ON a.manager_id = b.id', function(err, res) {
+          if (err) throw err;
+          console.table(res);
+          connection.end();
+
+        
+      })}
+      updateRole();
+    })
+    
+    })})}
+    getEmployee();
+  };
 
   menu();
 }
